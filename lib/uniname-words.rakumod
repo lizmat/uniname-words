@@ -22,8 +22,8 @@ my %uniname-words := BEGIN {
     )
 }
 
-my
-module uniname-words:ver<0.0.1>:auth<cpan:ELIZABETH> { }
+my    # must be on a separate line to appease App::Mi6
+module uniname-words:ver<0.0.2>:auth<cpan:ELIZABETH> { }
 
 sub EXPORT {
     my sub uniname-words(--> Map:D) { %uniname-words }

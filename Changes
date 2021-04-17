@@ -2,5 +2,8 @@ Revision history for uniname-words
 
 {{$NEXT}}
 
+0.0.2  2021-04-17T15:26:21+02:00
+    - Properly upload *and* set version tag
+
 0.0.1  2021-04-17T15:21:24+02:00
     - Initial version

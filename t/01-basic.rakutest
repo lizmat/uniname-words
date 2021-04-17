@@ -1,0 +1,14 @@
+use Test;
+use uniname-words;
+
+plan 3;
+
+ok uniname-words.elems > 1, 'did we get something actually';
+
+my @loves = uniname-words<LOVE>;
+ok @loves.elems > 0, "There are @loves.elems() words with 'LOVE' in them";
+is @loves.elems,
+   @loves.grep(*.uniname.comb(/ \w+ /).grep(*.contains("LOVE"))).elems,
+   "all @loves.elems() code points have indeed a word 'LOVE' in them";
+
+# vim: expandtab shiftwidth=4

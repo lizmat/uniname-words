@@ -1,9 +1,9 @@
-#unit class uniname-words:ver<0.0.1>:auth<cpan:ELIZABETH>;
-
 use nqp;
 
 my %uniname-words := BEGIN {
     my $uniname-words := nqp::hash;
+
+    note "The unicode database is being inspected, this may take a while.";
 
     for 0..0x10FFFF -> $cp {
         for $cp.uniname.comb(/ \w+ /) -> str $word {
@@ -22,8 +22,12 @@ my %uniname-words := BEGIN {
     )
 }
 
-my sub uniname-words(--> Map:D) is export {
-    %uniname-words
+my module uniname-words:ver<0.0.1>:auth<cpan:ELIZABETH> {
+}
+
+sub EXPORT {
+    my sub uniname-words(--> Map:D) { %uniname-words }
+    Map.new( ('&uniname-words' => &uniname-words) )
 }
 
 =begin pod

@@ -32,7 +32,7 @@ Installing (or running this module for the first time after a runtime update) ma
 AUTHOR
 ======
 
-Elizabeth Mattijsen <liz@wenzperl.nl>
+Elizabeth Mattijsen <liz@raku.rocks>
 
 Source can be located at: https://github.com/lizmat/uniname-words . Comments and Pull Requests are welcome.
 

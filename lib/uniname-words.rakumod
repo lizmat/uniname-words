@@ -1,3 +1,6 @@
+my
+module uniname-words:ver<0.0.3>:auth<zef:lizmat> { }  # just for mi6
+
 use nqp;
 
 my %uniname-words := BEGIN {
@@ -5,7 +8,7 @@ my %uniname-words := BEGIN {
 
     note "The unicode database is being inspected, this may take a while.";
 
-    for 0..0x10FFFF -> $cp {
+    for 0..0x10FFFF -> int32 $cp {
         for $cp.uniname.comb(/ \w+ /) -> str $word {
             nqp::push_i(
               nqp::ifnull(
@@ -21,9 +24,6 @@ my %uniname-words := BEGIN {
       nqp::create(Map),Map,'$!storage',$uniname-words
     )
 }
-
-my    # must be on a separate line to appease App::Mi6
-module uniname-words:ver<0.0.2>:auth<cpan:ELIZABETH> { }
 
 sub EXPORT {
     my sub uniname-words(--> Map:D) { %uniname-words }
@@ -69,7 +69,7 @@ run-time.
 
 =head1 AUTHOR
 
-Elizabeth Mattijsen <liz@wenzperl.nl>
+Elizabeth Mattijsen <liz@raku.rocks>
 
 Source can be located at: https://github.com/lizmat/uniname-words . Comments and
 Pull Requests are welcome.

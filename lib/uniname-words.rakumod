@@ -1,5 +1,5 @@
 my
-module uniname-words:ver<0.0.3>:auth<zef:lizmat> { }  # just for mi6
+module uniname-words:ver<10.0.0>:auth<zef:lizmat> { }  # just for mi6
 
 use nqp;
 
@@ -25,10 +25,7 @@ my %uniname-words := BEGIN {
     )
 }
 
-sub EXPORT {
-    my sub uniname-words(--> Map:D) { %uniname-words }
-    Map.new( ('&uniname-words' => &uniname-words) )
-}
+my sub uniname-words(--> Map:D) is export { %uniname-words }
 
 =begin pod
 

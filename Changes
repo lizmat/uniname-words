@@ -2,6 +2,9 @@ Revision history for uniname-words
 
 {{$NEXT}}
 
+10.0.0  2021-10-09T13:06:21+02:00
+    - Raise version and finally upload to zef ecosystem
+
 0.0.3  2021-09-10T12:09:00+02:00
     - Change file extension to .rakumod
     - Migrate to zef ecosystem

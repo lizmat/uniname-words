@@ -2,6 +2,14 @@ Revision history for uniname-words
 
 {{$NEXT}}
 
+10.0.1  2021-10-14T11:23:35+02:00
+    - Bundle all reserved codepoints under "reserved" without
+      checking the rest of the name.  This reduces the number
+      of entries from 1092494 to 262166, and also reduces the
+      compile time of the module from 30+ seconds to around 6
+      seconds on the computer of yours truly.  gfldex++ for
+      the impetus to look into this.
+
 10.0.0  2021-10-09T13:06:21+02:00
     - Raise version and finally upload to zef ecosystem
 

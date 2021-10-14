@@ -1,22 +1,29 @@
 my
-module uniname-words:ver<10.0.0>:auth<zef:lizmat> { }  # just for mi6
+module uniname-words:ver<10.0.1>:auth<zef:lizmat> { }  # just for mi6
 
 use nqp;
 
 my %uniname-words := BEGIN {
-    my $uniname-words := nqp::hash;
-
     note "The unicode database is being inspected, this may take a while.";
 
+    my int32 @reserved;
+    my $uniname-words := nqp::hash('reserved',@reserved);
+
     for 0..0x10FFFF -> int32 $cp {
-        for $cp.uniname.comb(/ \w+ /) -> str $word {
-            nqp::push_i(
-              nqp::ifnull(
-                nqp::atkey($uniname-words,$word),
-                nqp::bindkey($uniname-words,$word,my int32 @)
-              ),
-              $cp
-            );
+        my $uniname := $cp.uniname;
+        if $uniname.starts-with('<reserved') {
+            nqp::push_i(@reserved,$cp);
+        }
+        else {
+            for $uniname.comb(/ \w+ /) -> str $word {
+                nqp::push_i(
+                  nqp::ifnull(
+                    nqp::atkey($uniname-words,$word),
+                    nqp::bindkey($uniname-words,$word,my int32 @)
+                  ),
+                  $cp
+                );
+            }
         }
     }
 
@@ -39,7 +46,7 @@ uniname-words - look for words in unicode character names
 
 use uniname-words;
 
-say uniname-words.elems;  # 1092494
+say uniname-words.elems;  # 262166
 
 say .uniname for uniname-words<LOVE>;
 # LOVE HOTEL
@@ -55,6 +62,9 @@ subroutine: C<uniname-words>.  This returns a C<Map> with each
 word (/w+) from the unicode database (active at installation
 of the module) as a key, and an C<int32> array of the codepoints
 that have that word in their name, as the value.
+
+All Unicode reserved codepoints are available under the C<reserved>
+key: the rest of the name can be deduced from the codepoint value.
 
 =head1 INSTALLATION NOTE
 

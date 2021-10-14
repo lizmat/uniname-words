@@ -11,7 +11,7 @@ SYNOPSIS
 ```raku
 use uniname-words;
 
-say uniname-words.elems;  # 1092494
+say uniname-words.elems;  # 262166
 
 say .uniname for uniname-words<LOVE>;
 # LOVE HOTEL
@@ -23,6 +23,8 @@ DESCRIPTION
 ===========
 
 uniname-words is a utility library that exports a single subroutine: `uniname-words`. This returns a `Map` with each word (/w+) from the unicode database (active at installation of the module) as a key, and an `int32` array of the codepoints that have that word in their name, as the value.
+
+All Unicode reserved codepoints are available under the `reserved` key: the rest of the name can be deduced from the codepoint value.
 
 INSTALLATION NOTE
 =================

@@ -2,6 +2,9 @@ Revision history for uniname-words
 
 {{$NEXT}}
 
+10.0.2  2021-10-14T13:00:21+02:00
+    - Oops, forgot to manually update META :-(
+
 10.0.1  2021-10-14T11:23:35+02:00
     - Bundle all reserved codepoints under "reserved" without
       checking the rest of the name.  This reduces the number

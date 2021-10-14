@@ -1,5 +1,5 @@
 my
-module uniname-words:ver<10.0.1>:auth<zef:lizmat> { }  # just for mi6
+module uniname-words:ver<10.0.2>:auth<zef:lizmat> { }  # just for mi6
 
 use nqp;
 

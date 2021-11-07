@@ -2,6 +2,9 @@ Revision history for uniname-words
 
 {{$NEXT}}
 
+10.0.3  2021-11-07T12:04:31+01:00
+    - Remove the module specification, we don't need it anymore
+
 10.0.2  2021-10-14T13:00:21+02:00
     - Oops, forgot to manually update META :-(
 

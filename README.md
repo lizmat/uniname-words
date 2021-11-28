@@ -17,14 +17,25 @@ say .uniname for uniname-words<LOVE>;
 # LOVE HOTEL
 # LOVE LETTER
 # I LOVE YOU HAND SIGN
+
+say .uniname for uniname-words(<left bracket>);
 ```
 
 DESCRIPTION
 ===========
 
-uniname-words is a utility library that exports a single subroutine: `uniname-words`. This returns a `Map` with each word (/w+) from the unicode database (active at installation of the module) as a key, and an `int32` array of the codepoints that have that word in their name, as the value.
+uniname-words is a utility library that exports a single subroutine: `uniname-words`. When called without a parameter, it returns a `Map` with each word (/w+) from the unicode database (active at installation of the module) as a key, and an `int32` array of the codepoints that have that word in their name, as the value.
 
 All Unicode reserved codepoints are available under the `reserved` key: the rest of the name can be deduced from the codepoint value.
+
+When the `uniname-words` sub is called with one or more arguments, they are considered to be words to return the codepoints of. Given words will be automatically uppercased to be checked. An optional `:partial` named argument can be specified to return the codepoints of words that partially match.
+
+By default, if more than one word has been specified, **all** words must occur in the unicode name to be included. An optional `:any` named argument can be specified that **any** of the specified words should occur.
+
+uw
+==
+
+This module also install a command-line utility `uw`, that takes one or more words, and the `--partial` and `--any` parameters, just like the `uniname-words` sub does, and lists the names of the selected code points on STDOUT.
 
 INSTALLATION NOTE
 =================

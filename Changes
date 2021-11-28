@@ -2,6 +2,15 @@ Revision history for uniname-words
 
 {{$NEXT}}
 
+10.0.4  2021-11-28T12:00:28+01:00
+    - Make sure that codepoints that have the same word in their
+      name more than once, are only listed once (like 0x1FB3C,
+      LOWER LEFT BLOCK DIAGONAL LOWER MIDDLE LEFT TO LOWER CENTRE)
+    - Add handling of parameters to the uniname-words sub, to find
+      words, or strings, either all or any
+    - Add a command line utility "uw" to easily access the added
+      functionality
+
 10.0.3  2021-11-07T12:04:31+01:00
     - Remove the module specification, we don't need it anymore
 

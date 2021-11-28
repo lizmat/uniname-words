@@ -1,0 +1,10 @@
+use uniname-words;
+my %*SUB-MAIN-OPTS = :named-anywhere;
+
+unit sub MAIN(*@words, Bool :$partial, Bool :$any);
+
+@words
+  ?? (.uniname.say for uniname-words(@words, :$partial, :$any))
+  !! $*USAGE.say;
+
+# vim: expandtab shiftwidth=4

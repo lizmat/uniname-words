@@ -1,16 +1,65 @@
 use Test;
 use uniname-words;
 
-plan 4;
+plan 16;
 
 ok uniname-words.elems > 1, 'did we get something actually';
 
-my @loves = uniname-words<LOVE>;
-ok @loves.elems > 0, "There are @loves.elems() words with 'LOVE' in them";
-is @loves.elems,
-   @loves.grep(*.uniname.comb(/ \w+ /).grep(*.contains("LOVE"))).elems,
-   "all @loves.elems() code points have indeed a word 'LOVE' in them";
+for
+  uniname-words<LOVE>,
+  uniname-words(<love>)
+-> @loves {
+    ok @loves.elems, "There are @loves.elems() words with 'LOVE' in them";
+    is @loves.elems,
+       @loves.grep(*.uniname.contains(/ << LOVE >> /)).elems,
+       "all @loves.elems() code points have indeed a word 'LOVE' in them";
+}
 
-ok uniname-words<reserved>.elems > 800000;
+for uniname-words(<love>, :partial).item -> @loves {
+    ok @loves.elems, "There are @loves.elems() strings with 'LOVE' in them";
+    is @loves.elems,
+       @loves.grep(*.uniname.contains("LOVE")).elems,
+       "all @loves.elems() code points have indeed a string 'LOVE' in them";
+}
+
+ok uniname-words<reserved>.elems > 800000, 'enough reserved elements';
+
+for <LEFT BRACKET>.item -> @words {
+    if uniname-words(@words) -> @brackets {
+        ok @brackets.elems, 'there are words with LEFT and BRACKET';
+        is @brackets.elems,
+           @brackets.grep(
+             *.uniname.contains(/ << LEFT >> / & / << BRACKET >> /)
+           ).elems,
+        "all @brackets.elems() code points have both word LEFT and BRACKET";
+    }
+
+    if uniname-words(@words, :partial) -> @brackets {
+        ok @brackets.elems, 'there are strings with LEFT and BRACKET';
+        is @brackets.elems,
+           @brackets.grep(
+             *.uniname.contains(/ LEFT / & / BRACKET /)
+           ).elems,
+        "all @brackets.elems() code points have both string LEFT and BRACKET";
+    }
+
+    if uniname-words(@words, :any) -> @brackets {
+        ok @brackets.elems, 'there are words with LEFT or BRACKET';
+        is @brackets.elems,
+           @brackets.grep(
+             *.uniname.contains(/ << LEFT >> / | / << BRACKET >> /)
+           ).elems,
+        "all @brackets.elems() code points have either word LEFT or BRACKET";
+    }
+
+    if uniname-words(@words, :partial, :any) -> @brackets {
+        ok @brackets.elems, 'there are strings with LEFT or BRACKET';
+        is @brackets.elems,
+           @brackets.grep(
+             *.uniname.contains(/ LEFT | BRACKET /)
+           ).elems,
+        "all @brackets.elems() code points have either string LEFT or BRACKET";
+    }
+}
 
 # vim: expandtab shiftwidth=4

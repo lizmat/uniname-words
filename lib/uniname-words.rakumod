@@ -1,6 +1,6 @@
-use nqp;
 
 my %uniname-words := BEGIN {
+    use nqp;
     note "The unicode database is being inspected, this may take a while.";
 
     my int32 @reserved;
@@ -12,7 +12,7 @@ my %uniname-words := BEGIN {
             nqp::push_i(@reserved,$cp);
         }
         else {
-            for $uniname.comb(/ \w+ /) -> str $word {
+            for $uniname.comb(/ \w+ /).unique -> str $word {
                 nqp::push_i(
                   nqp::ifnull(
                     nqp::atkey($uniname-words,$word),
@@ -29,7 +29,66 @@ my %uniname-words := BEGIN {
     )
 }
 
-my sub uniname-words(--> Map:D) is export { %uniname-words }
+my proto sub uniname-words(|) is export {*}
+my multi sub uniname-words() { %uniname-words }
+
+my multi sub uniname-words(Str:D $word) {
+    %uniname-words{$word.uc} // my int32 @
+}
+my multi sub uniname-words(+@words, :$any) {
+    my int32 @seen;
+    if $any {
+        @seen = @words.map({ .Slip with %uniname-words{.uc} }).unique;
+    }
+    elsif @words.map({ .uc if $_ }) -> @WORDS {
+        my %seen is Bag = @WORDS.map: { .Slip with %uniname-words{$_} }
+        my $nr-words := @WORDS.elems;
+        @seen = %seen.map({ .key if .value == $nr-words });
+    }
+    @seen.sort
+}
+my multi sub uniname-words(Str:D $word, :$partial!) {
+    if $word && $partial {
+        my $WORD := $word.uc;
+        my int32 @seen = %uniname-words.keys.map: {
+            %uniname-words{$_}.Slip if .contains($WORD)
+        }
+        @seen.sort
+    }
+    else {
+        uniname-words($word)
+    }
+}
+my multi sub uniname-words(+@words, :$partial!, :$any) {
+    if $partial {
+        my int32 @seen;
+        if @words.map({ .uc if $_ }) -> @WORDS {
+            if $any {
+                @seen = %uniname-words.keys.map(-> $KEY {
+                    %uniname-words{$KEY}.Slip
+                      with @WORDS.first: { $KEY.contains($_) }
+                }).unique;
+            }
+            else {
+                my $any-WORD := @WORDS.any;
+                my %seen is Bag = %uniname-words.keys.map: -> $KEY {
+                    %uniname-words{$KEY}.Slip if $KEY.contains($any-WORD)
+                }
+                my $nr-words  := @WORDS.elems;
+                my $all-WORDS := @WORDS.all;
+                @seen = %seen.map: {
+                    .key
+                      if .value == $nr-words
+                      && .key.uniname.contains($all-WORDS)
+                }
+            }
+        }
+        @seen.sort
+    }
+    else {
+        uniname-words(@words, :$any)
+    }
+}
 
 =begin pod
 
@@ -50,18 +109,37 @@ say .uniname for uniname-words<LOVE>;
 # LOVE LETTER
 # I LOVE YOU HAND SIGN
 
+say .uniname for uniname-words(<left bracket>);
+
 =end code
 
 =head1 DESCRIPTION
 
-uniname-words is a utility library that exports a single
-subroutine: C<uniname-words>.  This returns a C<Map> with each
-word (/w+) from the unicode database (active at installation
+uniname-words is a utility library that exports a single subroutine:
+C<uniname-words>.  When called without a parameter, it returns a C<Map>
+with each word (/w+) from the unicode database (active at installation
 of the module) as a key, and an C<int32> array of the codepoints
 that have that word in their name, as the value.
 
 All Unicode reserved codepoints are available under the C<reserved>
 key: the rest of the name can be deduced from the codepoint value.
+
+When the C<uniname-words> sub is called with one or more arguments,
+they are considered to be words to return the codepoints of.  Given
+words will be automatically uppercased to be checked.  An optional
+C<:partial> named argument can be specified to return the codepoints
+of words that partially match.
+
+By default, if more than one word has been specified, B<all> words must
+occur in the unicode name to be included.  An optional C<:any> named
+argument can be specified that B<any> of the specified words should occur.
+
+=head1 uw
+
+This module also install a command-line utility C<uw>, that takes one
+or more words, and the C<--partial> and C<--any> parameters, just like
+the C<uniname-words> sub does, and lists the names of the selected
+code points on STDOUT.
 
 =head1 INSTALLATION NOTE
 

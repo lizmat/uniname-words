@@ -1,4 +1,5 @@
-
+# The main "database"
+my $words;
 my %uniname-words := BEGIN {
     use nqp;
     note "The unicode database is being inspected, this may take a while.";
@@ -24,9 +25,30 @@ my %uniname-words := BEGIN {
         }
     }
 
-    nqp::p6bindattrinvres(
+    my $map := nqp::p6bindattrinvres(
       nqp::create(Map),Map,'$!storage',$uniname-words
-    )
+    );
+
+    $words = ' ' ~ $map.keys.sort.join(' ') ~ ' ';
+
+    $map
+}
+
+# Return the word(s) of which the given string is a part
+my sub string2words($string) {
+    my $STRING := $string.trim.uc;
+    my int $index;
+    my str @words;
+    while $words.index($STRING,$index) -> int $this {  # cannot be 0
+        my int $left  = $words.rindex(' ',$this) + 1;
+        my int $right = $words.index(' ', $this);
+        @words.push: $words.substr($left, $right - $left);
+        $index = $right + 1;
+    }
+    @words
+}
+my sub strings2words(@strings) {
+    @strings.map({ string2words($_).Slip }).unique
 }
 
 my proto sub uniname-words(|) is export {*}
@@ -50,8 +72,8 @@ my multi sub uniname-words(+@words, :$any) {
 my multi sub uniname-words(Str:D $word, :$partial!) {
     if $word && $partial {
         my $WORD := $word.uc;
-        my int32 @seen = %uniname-words.keys.map: {
-            %uniname-words{$_}.Slip if .contains($WORD)
+        my int32 @seen = string2words($word).map: {
+            %uniname-words{$_}.Slip
         }
         @seen.sort
     }
@@ -64,15 +86,13 @@ my multi sub uniname-words(+@words, :$partial!, :$any) {
         my int32 @seen;
         if @words.map({ .uc if $_ }) -> @WORDS {
             if $any {
-                @seen = %uniname-words.keys.map(-> $KEY {
+                @seen = strings2words(@WORDS).map(-> $KEY {
                     %uniname-words{$KEY}.Slip
-                      with @WORDS.first: { $KEY.contains($_) }
                 }).unique;
             }
             else {
-                my $any-WORD := @WORDS.any;
-                my %seen is Bag = %uniname-words.keys.map: -> $KEY {
-                    %uniname-words{$KEY}.Slip if $KEY.contains($any-WORD)
+                my %seen is Bag = strings2words(@WORDS).map: -> $KEY {
+                    %uniname-words{$KEY}.Slip
                 }
                 my $nr-words  := @WORDS.elems;
                 my $all-WORDS := @WORDS.all;

@@ -139,7 +139,9 @@ argument can be specified that B<any> of the specified words should occur.
 This module also install a command-line utility C<uw>, that takes one
 or more words, and the C<--partial> and C<--any> parameters, just like
 the C<uniname-words> sub does, and lists the names of the selected
-code points on STDOUT.
+code points on STDOUT.  It also additionally takes a C<--verbose>
+parameter which will also output the codepoint value and a rendering
+of the codepoint (if possible).
 
 =head1 INSTALLATION NOTE
 

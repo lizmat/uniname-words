@@ -1,10 +1,12 @@
-use uniname-words;
+use uniname-words:ver<10.0.5>:auth<zef:lizmat>;
 my %*SUB-MAIN-OPTS = :named-anywhere;
 
-unit sub MAIN(*@words, Bool :$partial, Bool :$any);
+unit sub MAIN(*@words, Bool :$partial, Bool :$any, :$verbose);
 
 @words
-  ?? (.uniname.say for uniname-words(@words, :$partial, :$any))
+  ?? $verbose
+    ?? (say .fmt("%5X ") ~ .uniname ~ ' ' ~ .chr for uniname-words(@words, :$partial, :$any))
+    !! (.uniname.say for uniname-words(@words, :$partial, :$any))
   !! $*USAGE.say;
 
 # vim: expandtab shiftwidth=4

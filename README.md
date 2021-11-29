@@ -35,7 +35,7 @@ By default, if more than one word has been specified, **all** words must occur i
 uw
 ==
 
-This module also install a command-line utility `uw`, that takes one or more words, and the `--partial` and `--any` parameters, just like the `uniname-words` sub does, and lists the names of the selected code points on STDOUT.
+This module also install a command-line utility `uw`, that takes one or more words, and the `--partial` and `--any` parameters, just like the `uniname-words` sub does, and lists the names of the selected code points on STDOUT. It also additionally takes a `--verbose` parameter which will also output the codepoint value and a rendering of the codepoint (if possible).
 
 INSTALLATION NOTE
 =================

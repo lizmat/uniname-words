@@ -2,6 +2,9 @@ Revision history for uniname-words
 
 {{$NEXT}}
 
+10.0.5  2021-11-29T13:11:23+01:00
+    - Add support for --verbose to "uw" CLI
+
 10.0.4  2021-11-28T12:00:28+01:00
     - Make sure that codepoints that have the same word in their
       name more than once, are only listed once (like 0x1FB3C,

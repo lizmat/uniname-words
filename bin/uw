@@ -1,12 +1,26 @@
-use uniname-words:ver<10.0.6>:auth<zef:lizmat>;
+use uniname-words:ver<10.0.7>:auth<zef:lizmat>;
 my %*SUB-MAIN-OPTS = :named-anywhere;
 
 unit sub MAIN(*@words, Bool :$partial, Bool :$any, :$verbose);
 
-@words
-  ?? $verbose
-    ?? (say .fmt("%5X ") ~ .uniname ~ ' ' ~ .chr for uniname-words(@words, :$partial, :$any))
-    !! (.uniname.say for uniname-words(@words, :$partial, :$any))
-  !! $*USAGE.say;
+if @words.map: {
+    if $_ {
+        with .contains(/ \W /) && try .EVAL {
+            $_
+        }
+        else {
+            $_
+        }
+    }
+} -> @WORDS {
+    $verbose
+      ?? (say .fmt("%5X ") ~ .uniname ~ ' ' ~ .chr
+           for uniname-words(@WORDS, :$partial, :$any)
+         )
+      !! (.uniname.say for uniname-words(@WORDS, :$partial, :$any))
+}
+else {
+    $*USAGE.say;
+}
 
 # vim: expandtab shiftwidth=4

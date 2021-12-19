@@ -13,7 +13,7 @@ use uniname-words;
 
 say uniname-words.elems;  # 262166
 
-say .uniname for uniname-words<LOVE>;
+say .uniname for uniname-words<love>;
 # LOVE HOTEL
 # LOVE LETTER
 # I LOVE YOU HAND SIGN
@@ -24,11 +24,11 @@ say .uniname for uniname-words(<left bracket>);
 DESCRIPTION
 ===========
 
-uniname-words is a utility library that exports a single subroutine: `uniname-words`. When called without a parameter, it returns a `Map` with each word (/w+) from the unicode database (active at installation of the module) as a key, and an `int32` array of the codepoints that have that word in their name, as the value.
+uniname-words is a utility library that exports a single subroutine: `uniname-words`. When called without a parameter, it returns a `Map` with each word (/w+) from the unicode database (active at installation of the module) as a key (in lowercase), and an `int32` array of the codepoints that have that word in their name, as the value.
 
 All Unicode reserved codepoints are available under the `reserved` key: the rest of the name can be deduced from the codepoint value.
 
-When the `uniname-words` sub is called with one or more arguments, they are considered to be words to return the codepoints of. Given words will be automatically uppercased to be checked. An optional `:partial` named argument can be specified to return the codepoints of words that partially match.
+When the `uniname-words` sub is called with one or more arguments, they are considered to be words to return the codepoints of: these can be specified as a `Str` or as a `Regex`. Given words will be automatically lowercased to be checked. An optional `:partial` named argument can be specified to return the codepoints of words that partially match.
 
 By default, if more than one word has been specified, **all** words must occur in the unicode name to be included. An optional `:any` named argument can be specified that **any** of the specified words should occur.
 

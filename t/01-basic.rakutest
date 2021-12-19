@@ -1,13 +1,14 @@
 use Test;
 use uniname-words;
 
-plan 16;
+plan 21;
 
 ok uniname-words.elems > 1, 'did we get something actually';
 
 for
-  uniname-words<LOVE>,
-  uniname-words(<love>)
+  uniname-words<love>,
+  uniname-words(<love>),
+  uniname-words(/ << love >> /)
 -> @loves {
     ok @loves.elems, "There are @loves.elems() words with 'LOVE' in them";
     is @loves.elems,
@@ -15,14 +16,20 @@ for
        "all @loves.elems() code points have indeed a word 'LOVE' in them";
 }
 
-for uniname-words(<love>, :partial).item -> @loves {
+for
+  uniname-words(<love>, :partial),
+  uniname-words(/ love /)
+-> @loves {
     ok @loves.elems, "There are @loves.elems() strings with 'LOVE' in them";
     is @loves.elems,
        @loves.grep(*.uniname.contains("LOVE")).elems,
        "all @loves.elems() code points have indeed a string 'LOVE' in them";
 }
 
-ok uniname-words<reserved>.elems > 800000, 'enough reserved elements';
+diag uniname-words<reserved>.elems
+  unless ok uniname-words<reserved>.elems > 800000, 'enough reserved elements';
+diag uniname-words<control>.elems
+  unless ok uniname-words<control>.elems > 70, 'enough control elements';
 
 for <LEFT BRACKET>.item -> @words {
     if uniname-words(@words) -> @brackets {

@@ -1,3 +1,4 @@
+
 # The main "database"
 my $words;
 my %uniname-words := BEGIN {
@@ -16,8 +17,8 @@ my %uniname-words := BEGIN {
             for $uniname.comb(/ \w+ /).unique -> str $word {
                 nqp::push_i(
                   nqp::ifnull(
-                    nqp::atkey($uniname-words,$word),
-                    nqp::bindkey($uniname-words,$word,my int32 @)
+                    nqp::atkey($uniname-words,nqp::lc($word)),
+                    nqp::bindkey($uniname-words,nqp::lc($word),my int32 @)
                   ),
                   $cp
                 );
@@ -29,19 +30,20 @@ my %uniname-words := BEGIN {
       nqp::create(Map),Map,'$!storage',$uniname-words
     );
 
-    $words = ' ' ~ $map.keys.sort.join(' ') ~ ' ';
+    # this *must* be an assignment, as this runs in a BEGIN block
+    $words = "\0" ~ $map.keys.sort.join("\0") ~ "\0";
 
     $map
 }
 
 # Return the word(s) of which the given string is a part
-my sub string2words($string) {
-    my $STRING := $string.trim.uc;
+my sub string2words($STRING) {
+    my $string := $STRING.trim.lc;
     my int $index;
     my str @words;
-    while $words.index($STRING,$index) -> int $this {  # cannot be 0
-        my int $left  = $words.rindex(' ',$this) + 1;
-        my int $right = $words.index(' ', $this);
+    while $words.index($string,$index) -> int $this {  # cannot be 0
+        my int $left  = $words.rindex("\0",$this) + 1;
+        my int $right = $words.index("\0", $this);
         @words.push: $words.substr($left, $right - $left);
         $index = $right + 1;
     }
@@ -55,60 +57,75 @@ my proto sub uniname-words(|) is export {*}
 my multi sub uniname-words() { %uniname-words }
 
 my multi sub uniname-words(Str:D $word) {
-    %uniname-words{$word.uc} // my int32 @
+    %uniname-words{$word.lc} // my int32 @
 }
-my multi sub uniname-words(+@words, :$any) {
+my multi sub uniname-words(+@WORDS, :$any) {
     my int32 @seen;
     if $any {
-        @seen = @words.map({ .Slip with %uniname-words{.uc} }).unique;
+        @seen = @WORDS.map({ .Slip with uniname-words(.lc) }).unique;
     }
-    elsif @words.map({ .uc if $_ }) -> @WORDS {
-        my %seen is Bag = @WORDS.map: { .Slip with %uniname-words{$_} }
-        my $nr-words := @WORDS.elems;
+    elsif @WORDS.map({ $_ ~~ Regex ?? $_ !! $_ ?? .lc !! Empty }) -> @words {
+        my %seen is Bag = @words.map: { .Slip with uniname-words($_) }
+        my $nr-words := @words.elems;
         @seen = %seen.map({ .key if .value == $nr-words });
     }
     @seen.sort
 }
-my multi sub uniname-words(Str:D $word, :$partial!) {
-    if $word && $partial {
-        my $WORD := $word.uc;
-        my int32 @seen = string2words($word).map: {
-            %uniname-words{$_}.Slip
-        }
+my multi sub uniname-words(Str:D $WORD, :$partial!) {
+    if $WORD && $partial {
+        my $word := $WORD.lc;
+        my int32 @seen;
+        @seen.append($_) for string2words($word).map: { %uniname-words{$_} }
         @seen.sort
     }
     else {
-        uniname-words($word)
+        uniname-words($WORD)
     }
 }
-my multi sub uniname-words(+@words, :$partial!, :$any) {
+my multi sub uniname-words(+@WORDS, :$partial!, :$any) {
     if $partial {
         my int32 @seen;
-        if @words.map({ .uc if $_ }) -> @WORDS {
+        if @WORDS.map({ .lc if $_ }) -> @words {
             if $any {
-                @seen = strings2words(@WORDS).map(-> $KEY {
-                    %uniname-words{$KEY}.Slip
+                @seen = strings2words(@words).map({
+                    %uniname-words{$_}.Slip
                 }).unique;
             }
             else {
-                my %seen is Bag = strings2words(@WORDS).map: -> $KEY {
-                    %uniname-words{$KEY}.Slip
+                my %seen is Bag = strings2words(@words).map: {
+                    %uniname-words{$_}.Slip
                 }
-                my $nr-words  := @WORDS.elems;
-                my $all-WORDS := @WORDS.all;
+                my $nr-words  := @words.elems;
+                my $all-words := @words.all;
                 @seen = %seen.map: {
                     .key
                       if .value == $nr-words
-                      && .key.uniname.contains($all-WORDS)
+                      && .key.uniname.lc.contains($all-words)
                 }
             }
         }
         @seen.sort
     }
     else {
-        uniname-words(@words, :$any)
+        uniname-words(@WORDS, :$any)
     }
 }
+
+my $match;
+my multi sub uniname-words(Regex:D $regex) {
+    without $match {
+        use nqp;
+        use Map::Match:ver<0.0.1>:auth<zef:lizmat>;
+        $match := nqp::create(Map::Match);
+        nqp::bindattr($match,Map::Match,'%!map',%uniname-words);
+        nqp::bindattr($match,Map::Match,'$!keys',nqp::decont($words));
+    }
+
+    my int32 @seen;
+    @seen.append($_) for $match.AT-KEY($regex.raku.lc.EVAL);
+    @seen.sort
+}
+
 
 =begin pod
 
@@ -124,7 +141,7 @@ use uniname-words;
 
 say uniname-words.elems;  # 262166
 
-say .uniname for uniname-words<LOVE>;
+say .uniname for uniname-words<love>;
 # LOVE HOTEL
 # LOVE LETTER
 # I LOVE YOU HAND SIGN
@@ -138,17 +155,18 @@ say .uniname for uniname-words(<left bracket>);
 uniname-words is a utility library that exports a single subroutine:
 C<uniname-words>.  When called without a parameter, it returns a C<Map>
 with each word (/w+) from the unicode database (active at installation
-of the module) as a key, and an C<int32> array of the codepoints
-that have that word in their name, as the value.
+of the module) as a key (in lowercase), and an C<int32> array of the
+codepoints that have that word in their name, as the value.
 
 All Unicode reserved codepoints are available under the C<reserved>
 key: the rest of the name can be deduced from the codepoint value.
 
 When the C<uniname-words> sub is called with one or more arguments,
-they are considered to be words to return the codepoints of.  Given
-words will be automatically uppercased to be checked.  An optional
-C<:partial> named argument can be specified to return the codepoints
-of words that partially match.
+they are considered to be words to return the codepoints of:  these
+can be specified as a C<Str> or as a C<Regex>.  Given words will be
+automatically lowercased to be checked.  An optional C<:partial> named
+argument can be specified to return the codepoints of words that partially
+match.
 
 By default, if more than one word has been specified, B<all> words must
 occur in the unicode name to be included.  An optional C<:any> named

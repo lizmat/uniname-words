@@ -2,6 +2,13 @@ Revision history for uniname-words
 
 {{$NEXT}}
 
+10.0.7  2021-12-19T22:59:21+01:00
+    - Add dependency on Map::Match
+    - Allow for regexes to be used instead of just strings
+    - Adapt the CLI to accept words with any non-alphanumeric to be
+      accepted as a regex specification
+    - The Map returned by uniname-words() now only has lowercase keys
+
 10.0.6  2021-11-29T21:35:47+01:00
     - Speed up partial searches by a factor of 20 or so
 

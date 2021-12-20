@@ -5,8 +5,10 @@ unit sub MAIN(*@words, Bool :$partial, Bool :$any, :$verbose);
 
 if @words.map: {
     if $_ {
-        with .contains(/ \W /) && try .EVAL {
-            $_
+        if .contains(/ \W /) {
+            with try .EVAL {
+                $_
+            }
         }
         else {
             $_

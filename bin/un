@@ -1,10 +1,7 @@
-use uniname-words:ver<10.0.10>:auth<zef:lizmat>;
 my %*SUB-MAIN-OPTS = :named-anywhere;
 
 unit sub MAIN(
-       *@words,    #= one or more words / regexes
-  Bool :$partial,  #= allow for partial matches, default: no
-  Bool :$any,      #= show any string matches, default: all
+       *@strings,  #= one or more strings
   Bool :$hex,      #= show hex representation, default: no
   Bool :$name,     #= show name, default: no
   Bool :$char,     #= show the actual character, default: no
@@ -22,23 +19,12 @@ my &mapper = &::(
   ("hex" if $hex) ~ ("name" if $name) ~ ("char" if $char)
 ) || &hexnamechar;
 
-if @words.map: {
-    if $_ {
-        if .contains(/ \W /) {
-            with try .EVAL {
-                $_
-            }
-        }
-        else {
-            $_
-        }
-    }
-} -> @WORDS {
-    print mapper($_) for uniname-words(@WORDS, :$partial, :$any);
+if @strings.map(*.comb.map(*.ord).Slip) -> @cp {
+    print mapper($_) for @cp;
     print "\n";
 }
 else {
-    note "uw - Look up words or regexes in the installed unicode database.\n";
+    note "un - Show unicode names of given strings.\n";
     note $*USAGE;
     note "\nDefaults to --hex --name --char if none of these specified.";
     exit 1;

@@ -35,7 +35,12 @@ By default, if more than one word has been specified, **all** words must occur i
 uw
 ==
 
-This module also install a command-line utility `uw`, that takes one or more words, and the `--partial` and `--any` parameters, just like the `uniname-words` sub does, and lists the names of the selected code points on STDOUT. It also additionally takes a `--verbose` parameter which will also output the codepoint value and a rendering of the codepoint (if possible).
+This module also install a command-line utility `uw`, that takes one or more words, and the `--partial` and `--any` parameters, just like the `uniname-words` sub does, and lists the names of the selected code points on STDOUT. It also additionally takes a `--hex` parameter (to just see the hexadecimal values), a `--name` parameter (to just see the names) and/or a `--char` (to just see a rendition). These 3 parameters can also be mixed in any combination.
+
+un
+==
+
+This module also install a command-line utility `un`, that takes one or more strings, and lists the names of the code points of these strings on STDOUT. It also additionally takes a `--hex` parameter (to just see the hexadecimal values), a `--name` parameter (to just see the names) and/or a `--char` (to just see a rendition). These 3 parameters can also be mixed in any combination.
 
 INSTALLATION NOTE
 =================
@@ -52,7 +57,7 @@ Source can be located at: https://github.com/lizmat/uniname-words . Comments and
 COPYRIGHT AND LICENSE
 =====================
 
-Copyright 2021 Elizabeth Mattijsen
+Copyright 2021, 2022 Elizabeth Mattijsen
 
 This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
 

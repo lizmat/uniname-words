@@ -2,6 +2,11 @@ Revision history for uniname-words
 
 {{$NEXT}}
 
+10.0.11  2022-08-22T15:50:45+02:00
+    - Fix issue with multiple code-point emojis, listing only the first
+    - Remove mention of unicode database inspection, as it is shown too late
+    - Bump dependency on Map::Match
+
 10.0.10  2022-01-08T16:42:04+01:00
     - Fix version used in "uw" script
     - Add "un" script for finding out uninames from given strings

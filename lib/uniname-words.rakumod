@@ -3,7 +3,6 @@
 my $words;
 my %uniname-words := BEGIN {
     use nqp;
-    note "The unicode database is being inspected, this may take a while.";
 
     my int32 @reserved;
     my $uniname-words := nqp::hash('reserved',@reserved);
@@ -115,7 +114,7 @@ my $match;
 my multi sub uniname-words(Regex:D $regex) {
     without $match {
         use nqp;
-        use Map::Match:ver<0.0.2>:auth<zef:lizmat>;
+        use Map::Match:ver<0.0.3>:auth<zef:lizmat>;
         $match := nqp::create(Map::Match);
         nqp::bindattr($match,Map::Match,'%!map',%uniname-words);
         nqp::bindattr($match,Map::Match,'$!keys',nqp::decont($words));
@@ -205,6 +204,10 @@ Elizabeth Mattijsen <liz@raku.rocks>
 
 Source can be located at: https://github.com/lizmat/uniname-words . Comments and
 Pull Requests are welcome.
+
+If you like this module, or what I’m doing more generally, committing to a
+L<small sponsorship|https://github.com/sponsors/lizmat/>  would mean a great
+deal to me!
 
 =head1 COPYRIGHT AND LICENSE
 

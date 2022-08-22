@@ -6,7 +6,7 @@
   "build-depends": [
   ],
   "depends": [
-    "Map::Match:ver<0.0.2>:auth<zef:lizmat>"
+    "Map::Match:ver<0.0.3>:auth<zef:lizmat>"
   ],
   "description": "look for words in unicode character names",
   "license": "Artistic-2.0",
@@ -22,5 +22,5 @@
   ],
   "test-depends": [
   ],
-  "version": "10.0.10"
+  "version": "10.0.11"
 }

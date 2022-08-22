@@ -19,7 +19,7 @@ my &mapper = &::(
   ("hex" if $hex) ~ ("name" if $name) ~ ("char" if $char)
 ) || &hexnamechar;
 
-if @strings.map(*.comb.map(*.ord).Slip) -> @cp {
+if @strings.map(*.comb.map(*.ords.Slip).Slip) -> @cp {
     print mapper($_) for @cp;
     print "\n";
 }

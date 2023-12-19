@@ -6,7 +6,7 @@
   "build-depends": [
   ],
   "depends": [
-    "Map::Match:ver<0.0.3>:auth<zef:lizmat>"
+    "Map::Match:ver<0.0.4>:auth<zef:lizmat>"
   ],
   "description": "look for words in unicode character names",
   "license": "Artistic-2.0",
@@ -19,8 +19,9 @@
   ],
   "source-url": "https://github.com/lizmat/uniname-words.git",
   "tags": [
+    "UNICODE"
   ],
   "test-depends": [
   ],
-  "version": "10.0.12"
+  "version": "10.0.13"
 }

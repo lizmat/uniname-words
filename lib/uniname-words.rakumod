@@ -114,7 +114,7 @@ my $match;
 my multi sub uniname-words(Regex:D $regex) {
     without $match {
         use nqp;
-        use Map::Match:ver<0.0.4>:auth<zef:lizmat>;
+        use Map::Match:ver<0.0.5>:auth<zef:lizmat>;
         $match := nqp::create(Map::Match);
         nqp::bindattr($match,Map::Match,'%!map',%uniname-words);
         nqp::bindattr($match,Map::Match,'$!keys',nqp::decont($words));
@@ -211,7 +211,7 @@ deal to me!
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2021, 2022, 2023 Elizabeth Mattijsen
+Copyright 2021, 2022, 2023, 2024 Elizabeth Mattijsen
 
 This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
 

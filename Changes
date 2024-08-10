@@ -2,6 +2,12 @@ Revision history for uniname-words
 
 {{$NEXT}}
 
+10.0.14  2024-08-10T13:51:34+02:00
+    - Up dependency on Map::Match
+    - Add sponsor button
+    - Add separate CI badges for each OS
+    - Update copyright year
+
 10.0.13  2023-12-19T11:21:02+01:00
     - Up dependency on Map::Match
     - Update copyright year

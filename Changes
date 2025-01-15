@@ -1,6 +1,8 @@
 Revision history for uniname-words
 
 {{$NEXT}}
+
+10.0.15  2025-01-15T13:15:49+01:00
     - Up dependency on Map::Match
     - Update copyright year
 

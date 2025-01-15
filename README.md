@@ -24,7 +24,7 @@ say .uniname for uniname-words(<left bracket>);
 DESCRIPTION
 ===========
 
-uniname-words is a utility library that exports a single subroutine: `uniname-words`. When called without a parameter, it returns a `Map` with each word (/w+) from the unicode database (active at installation of the module) as a key (in lowercase), and an `int32` array of the codepoints that have that word in their name, as the value.
+The `uniname-words` distribution exports a single subroutine: `uniname-words`. When called without a parameter, it returns a `Map` with each word (/w+) from the unicode database (active at installation of the module) as a key (in lowercase), and an `int32` array of the codepoints that have that word in their name, as the value.
 
 All Unicode reserved codepoints are available under the `reserved` key: the rest of the name can be deduced from the codepoint value.
 
@@ -59,7 +59,7 @@ If you like this module, or what I’m doing more generally, committing to a [sm
 COPYRIGHT AND LICENSE
 =====================
 
-Copyright 2021, 2022, 2023, 2024 Elizabeth Mattijsen
+Copyright 2021, 2022, 2023, 2024, 2025 Elizabeth Mattijsen
 
 This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
 

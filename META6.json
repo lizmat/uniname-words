@@ -5,19 +5,28 @@
   ],
   "build-depends": [
   ],
-  "depends": [
-    "Map::Match:ver<0.0.8+>:auth<zef:lizmat>"
-  ],
+  "depends": {
+    "runtime": {
+      "requires": [
+        "Map::Match:ver<0.0.10+>:auth<zef:lizmat>"
+      ]
+    }
+  },
   "description": "look for words in unicode character names",
   "license": "Artistic-2.0",
   "name": "uniname-words",
-  "perl": "6.d",
   "provides": {
     "uniname-words": "lib/uniname-words.rakumod"
   },
+  "raku": "6.d",
   "resources": [
   ],
-  "source-url": "https://github.com/lizmat/uniname-words.git",
+  "source-url": "https://codeberg.org/lizmat/uniname-words.git",
+  "support": {
+    "bugtracker": "https://codeberg.org/lizmat/uniname-words/issues",
+    "email": "liz@raku.rocks",
+    "source": "https://codeberg.org/lizmat/uniname-words.git"
+  },
   "tags": [
     "UNICODE"
   ],
